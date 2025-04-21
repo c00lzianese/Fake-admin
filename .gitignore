@@ -1,41 +1,38 @@
-# Compiled Lua sources
-luac.out
+local function giveFakeAdmin(player)
+    local fakeTag = Instance.new("BillboardGui")
+    fakeTag.Parent = player.Character.Head
+    fakeTag.Size = UDim2.new(0, 100, 0, 50)
 
-# luarocks build files
-*.src.rock
-*.zip
-*.tar.gz
+    local label = Instance.new("TextLabel")
+    label.Parent = fakeTag
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Text = "[💼 Roblox Admin]" -- Fake admin tag
+    label.TextColor3 = Color3.new(1, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.SourceSansBold
+    label.TextScaled = true
+end
 
-# Object files
-*.o
-*.os
-*.ko
-*.obj
-*.elf
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-*.def
-*.exp
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
+game.Players.PlayerAdded:Connect(function(player)
+    wait(2) -- Delay for effect
+    giveFakeAdmin(player)
+    player.Chatted:Connect(function(msg)
+        if msg == "!ban" then
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Admin Warning",
+                Text = "You have been permanently banned.",
+                Duration = 5
+            })
+        elseif msg == "!kick" then
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Admin Alert",
+                Text = "You have been kicked from the server.",
+                Duration = 5
+            })
+        elseif msg == "!shutdown" then
+            for _, plr in pairs(game.Players:GetPlayers()) do
+                plr:LoadCharacter()
+            end
+        end
+    end)
+end)
